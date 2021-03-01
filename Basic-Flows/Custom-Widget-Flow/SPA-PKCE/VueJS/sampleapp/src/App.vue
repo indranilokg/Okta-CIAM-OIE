@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <v-app-bar app color="purple" elevate-on-scroll dark>
+    <v-app-bar app elevate-on-scroll>
       <v-img class="mx-2" src="@/assets/okta-logo.png" max-height="45" max-width="45" contain/>
-      <b>Application 2 (OIE Demo)</b>
+      <b>OIE Demo - Sign-in Widget</b>
       <v-spacer/>
       <v-btn class="ma-2" color="primary" to="/">Home
           <v-icon right>mdi-home</v-icon>
@@ -18,7 +18,7 @@
         </v-btn>
 		</v-app-bar>
     <v-content>
-      <v-container fluid class="ma-0 pa-0">
+      <v-container fluid>
         <router-view></router-view>
       </v-container>
     </v-content>
@@ -33,6 +33,7 @@ export default {
   }),
   created () {
     this.isAuthenticated()
+    this.$auth.authStateManager.subscribe(this.isAuthenticated)
   },
   watch: {
     '$route': 'isAuthenticated'
@@ -42,10 +43,11 @@ export default {
       this.authenticated = await this.$auth.isAuthenticated()
     },
     async login () {
-     this.$auth.loginRedirect('/')
+     //this.$auth.loginRedirect('/')
+     this.$router.push({ path: '/login' })
     },
     async logout () {
-      await this.$auth.logout()
+      await this.$auth.signout()
       await this.isAuthenticated()
 
       this.$router.push({ path: '/' })
