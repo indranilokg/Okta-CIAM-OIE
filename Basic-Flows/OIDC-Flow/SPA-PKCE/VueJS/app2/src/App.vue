@@ -45,7 +45,7 @@ export default {
      this.$auth.loginRedirect('/')
     },
     async logout () {
-      await this.$auth.logout()
+      await this.$auth.signOut()
       await this.isAuthenticated()
 
       this.$router.push({ path: '/' })

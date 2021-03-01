@@ -13,12 +13,15 @@ export default {
   mounted: function () {
     this.$nextTick(function () {
       this.widget = new OktaSignIn({
-        baseUrl: 'https://oietiger126.oktapreview.com',
+        baseUrl: 'https://acmecorp.twisec.com',
         clientId: '0oax7szi44siifGwt0h7',
         redirectUri: 'http://localhost:8080/login/callback',
+        features: {
+         registration: true
+        },
         //useInteractionCodeFlow: true,
         authParams: {
-          issuer: 'https://oietiger126.oktapreview.com/oauth2/default',
+          issuer: 'https://acmecorp.twisec.com/oauth2/ausx90vikfMjKld000h7',
           display: 'page',
           scopes: ['openid', 'profile', 'email']
         }
