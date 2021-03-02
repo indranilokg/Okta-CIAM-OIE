@@ -1,3 +1,8 @@
-# Okta-CIAM-OIE
+### Setup
 
-Okta Idenity Engine - Customer Identity Management Assets
+cd sampleapp/
+npm install
+
+### Execution 
+node app.js
+
