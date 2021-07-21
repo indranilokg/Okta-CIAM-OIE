@@ -6,45 +6,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OIE - Okta Sign-In Widget</title>
 
-  <script src="https://global.oktacdn.com/okta-signin-widget/5.4.0/js/okta-sign-in.min.js" type="text/javascript"></script>
-  <link href="https://global.oktacdn.com/okta-signin-widget/5.4.0/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
+  <script src="https://global.oktacdn.com/okta-signin-widget/5.8.3/js/okta-sign-in.min.js" type="text/javascript"></script>
+  <link href="https://global.oktacdn.com/okta-signin-widget/5.8.3/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
   <div id="okta-login-container"></div>
   <div id="content"></div>
   <script>
   var oktaSignIn = new OktaSignIn({
-      baseUrl: 'https://acmecorp.twisec.com',
-      clientId: '0oax7szi44siifGwt0h7',
+      baseUrl: 'https://ijtest.oktapreview.com',
+      clientId: '0oax52em0J5XR2EF01d6',
       redirectUri: 'http://localhost:3000/callback',
       features: {
         registration: true
       },
       useInteractionCodeFlow: true,
       authParams: {
-        issuer: 'https://acmecorp.twisec.com/oauth2/ausx90vikfMjKld000h7',
+        issuer: 'https://ijtest.oktapreview.com/oauth2/ausudrindxzkPASL51d6',
         display: 'page',
         scopes: ['openid', 'profile', 'email']
       }
     });
 
-  var render = function(id_token){
+  var render = function(session){
       const par1 = document.createElement('p');
-      par1.innerHTML = `Hello <b>${id_token.claims.email}</b>`;
+      par1.innerHTML = `Hello <b>${session.claims["preferred_username"]}</b>`;
       document.getElementById('content').appendChild(par1);
 
       const par2 = document.createElement('p');
-      par2.innerHTML = `<b>ID Token Claims:</b><br> ${JSON.stringify(id_token.claims)}`;
+      par2.innerHTML = `<b>Session:</b><br> ${JSON.stringify(session)}`;
       document.getElementById('content').appendChild(par2);
   }
 
-  oktaSignIn.authClient.tokenManager.get('idToken')
-  .then(function(token) {
-    if (token) {
-      console.log("ID Token:" + token)
-      render(token)
+  oktaSignIn.authClient.session.get()
+  .then(function(session) {
+    console.log("Session:" + JSON.stringify(session))
+    if (session.status == "ACTIVE") {
+      render(session)
     } else {
-      console.log("ID token not found")
+      console.log("session not found")
       oktaSignIn.showSignInToGetTokens({
         el: '#okta-login-container'
       }).then(function(tokens) {
