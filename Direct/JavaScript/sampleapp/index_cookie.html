@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OIE - Okta Direct Login</title>
+
+  <script src="https://global.oktacdn.com/okta-auth-js/5.2.2/okta-auth-js.min.js" type="text/javascript"></script>
+</head>
+<body>
+  <div id="okta-login-container"></div>
+  <div id="content"></div>
+  <script>
+
+  var config = {
+    issuer: 'https://ijtest.oktapreview.com/oauth2/ausudrindxzkPASL51d6',
+    clientId: '0oax52em0J5XR2EF01d6',
+    redirectUri: 'http://localhost:3000/callback',
+    scopes: ['openid', 'profile', 'email'],
+    pkce: true,
+    useInteractionCodeFlow: true
+  };
+
+  var authClient = new OktaAuth(config);
+
+  var render = async function(){
+      loggedIn = await isAuthenticated()
+      console.log(loggedIn)
+      if (!loggedIn){
+        const par1 = document.createElement('div');
+        par1.innerHTML = `<div>
+                            <div>Username</div>
+                            <input id="username" type="text" name="username" required />
+                          </div>
+                          <br/>
+                          <div>
+                            <div>Password</div>
+                            <input id="password" type="password" name="password" required />
+                          </div>
+                          <br/>
+                          <button id="submit-login-form" onclick="login();">
+                            LOGIN
+                          </button>`;
+        document.getElementById('content').appendChild(par1);
+      } else{
+        session = await authClient.session.get()
+        tokens = await authClient.token.getWithoutPrompt({responseType: 'id_token'})
+        console.log(tokens)
+        const par1 = document.createElement('p');
+        par1.innerHTML = `Hello <b>${session.login}</b>`;
+        document.getElementById('content').appendChild(par1);
+
+        const par2 = document.createElement('p');
+        par2.innerHTML = `<b>Session:</b><br> ${JSON.stringify(tokens.tokens.accessToken.claims)}`;
+        document.getElementById('content').appendChild(par2);
+      }
+  }
+
+  var login = async function(){
+    const { 
+      status, 
+      tokens 
+    } = await authClient.idx.authenticate({ 
+        username: username.value,
+        password: password.value,
+        authenticators: ['password']
+    });
+    console.log(tokens)
+    render()  
+  }
+
+  const isAuthenticated = async function(){
+      session = await authClient.session.get()
+      console.log("Session:" + JSON.stringify(session))
+      if (session.status == "ACTIVE") {
+        return true
+      } else {
+        console.log("session not found")
+        return false
+      }
+  }
+
+  render()
+  </script>
+</body>
+</html>
